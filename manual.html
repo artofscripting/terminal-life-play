@@ -1,0 +1,1187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Terminal Life Manual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+
+<style>
+  /* ============================================================
+     TERMINAL LIFE MANUAL
+     Typeset in the game's own materials: box-drawing rules, a
+     warm-paper terminal ground, and the amber / cyan / green the
+     game itself paints buttons, highlights and "good" in.
+     ============================================================ */
+
+  :root {
+    --ground:      #f3efe4;
+    --surface:     #fbf8f0;
+    --surface-2:   #ece6d6;
+    --ink:         #2a2822;
+    --ink-soft:    #59544733;
+    --ink-mid:     #5b5648;
+    --ink-faint:   #8b8573;
+    --hairline:    #dcd4c0;
+    --hairline-hi: #cabfa3;
+    --amber:       #a86e07;
+    --amber-hi:    #c98a17;
+    --cyan:        #1c6b7a;
+    --green:       #4c6f36;
+    --red:         #a53f2b;
+    --keycap-bg:   #ece4d0;
+    --keycap-edge: #c6bc9f;
+    --keycap-ink:  #5b5648;
+    --sel:         #f0e6cc;
+
+    --font-body: "IBM Plex Serif", "Iowan Old Style", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+
+    --measure: 68ch;
+    --step--1: 0.86rem;
+    --step-0:  1.02rem;
+    --step-1:  1.18rem;
+    --step-2:  1.5rem;
+    --step-3:  2rem;
+    --step-4:  2.7rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #14130d;
+      --surface:     #1b1912;
+      --surface-2:   #242015;
+      --ink:         #e7e2d0;
+      --ink-soft:    #a29b8422;
+      --ink-mid:     #a39c86;
+      --ink-faint:   #757060;
+      --hairline:    #322e20;
+      --hairline-hi: #423c2a;
+      --amber:       #e0a53a;
+      --amber-hi:    #f2bd5a;
+      --cyan:        #5cb9c9;
+      --green:       #86b46c;
+      --red:         #dc7c64;
+      --keycap-bg:   #262218;
+      --keycap-edge: #3d3728;
+      --keycap-ink:  #b7b09a;
+      --sel:         #2c2718;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #14130d;
+    --surface:     #1b1912;
+    --surface-2:   #242015;
+    --ink:         #e7e2d0;
+    --ink-soft:    #a29b8422;
+    --ink-mid:     #a39c86;
+    --ink-faint:   #757060;
+    --hairline:    #322e20;
+    --hairline-hi: #423c2a;
+    --amber:       #e0a53a;
+    --amber-hi:    #f2bd5a;
+    --cyan:        #5cb9c9;
+    --green:       #86b46c;
+    --red:         #dc7c64;
+    --keycap-bg:   #262218;
+    --keycap-edge: #3d3728;
+    --keycap-ink:  #b7b09a;
+    --sel:         #2c2718;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection { background: var(--sel); }
+
+  a {
+    color: var(--cyan);
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+  }
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* ---- shell -------------------------------------------------- */
+
+  .shell {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 clamp(1.1rem, 4vw, 3.5rem);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  @media (min-width: 1000px) {
+    .layout {
+      grid-template-columns: 232px minmax(0, 1fr);
+      gap: clamp(2rem, 5vw, 5rem);
+      align-items: start;
+    }
+  }
+
+  /* ---- masthead --------------------------------------------- */
+
+  .masthead {
+    padding: clamp(2.6rem, 7vw, 5rem) 0 clamp(1.6rem, 4vw, 2.6rem);
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin: 0 0 1rem;
+  }
+
+  .masthead h1 {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: clamp(2.1rem, 7vw, var(--step-4));
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.9rem;
+    text-wrap: balance;
+  }
+  .masthead h1 .at {
+    color: var(--amber);
+  }
+
+  .masthead .standfirst {
+    max-width: 46ch;
+    color: var(--ink-mid);
+    font-size: var(--step-1);
+    margin: 0;
+  }
+
+  /* ---- the terminal hero ----------------------------------- */
+
+  .screen-wrap {
+    margin: clamp(1.8rem, 4vw, 2.6rem) 0 0;
+    border: 1px solid var(--hairline-hi);
+    border-radius: 6px;
+    background: var(--surface);
+    overflow: hidden;
+    box-shadow: 0 1px 0 var(--hairline);
+  }
+
+  .screen-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.85rem;
+    border-bottom: 1px solid var(--hairline);
+    background: var(--surface-2);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .screen-bar .dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--hairline-hi);
+    flex: none;
+  }
+  .screen-bar .dot:first-child { background: var(--amber); }
+
+  .screen {
+    margin: 0;
+    padding: 1.15rem clamp(0.8rem, 3vw, 1.6rem) 1.35rem;
+    font-family: var(--font-mono);
+    font-size: clamp(0.62rem, 1.9vw, 0.82rem);
+    line-height: 1.5;
+    color: var(--ink-faint);
+    overflow-x: auto;
+    white-space: pre;
+    tab-size: 2;
+  }
+  .screen .p  { color: var(--ink); font-weight: 600; }
+  .screen .k  { color: var(--amber); }
+  .screen .g  { color: var(--green); }
+  .screen .c  { color: var(--cyan); }
+  .screen .w  { color: var(--ink-mid); }
+  .screen .d  { color: var(--ink-faint); opacity: 0.7; }
+  .screen .good { color: var(--green); }
+  .screen .warn { color: var(--amber-hi); }
+  .screen .cursor {
+    color: var(--amber);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .screen .cursor { animation: blink 1.15s steps(1) infinite; }
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .screen-note {
+    padding: 0.7rem clamp(0.9rem, 3vw, 1.6rem) 0.9rem;
+    border-top: 1px solid var(--hairline);
+    background: var(--surface-2);
+    font-size: var(--step--1);
+    color: var(--ink-mid);
+  }
+
+  /* ---- table of contents ----------------------------------- */
+
+  .toc {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    line-height: 1.5;
+    padding: clamp(1.6rem, 4vw, 2.4rem) 0;
+  }
+  @media (min-width: 1000px) {
+    .toc {
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 3rem 0;
+      border-right: 1px solid var(--hairline);
+      margin-right: -1px;
+    }
+  }
+
+  .toc h2 {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 1rem;
+    font-weight: 600;
+  }
+  .toc ol { list-style: none; margin: 0; padding: 0; }
+  .toc > ol > li { margin-bottom: 0.55rem; }
+  .toc a {
+    color: var(--ink-mid);
+    text-decoration: none;
+    display: block;
+    padding: 0.12rem 0;
+    border-left: 2px solid transparent;
+    padding-left: 0.7rem;
+    margin-left: -0.7rem;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .toc a .num { color: var(--ink-faint); margin-right: 0.6em; }
+  .toc a:hover { color: var(--ink); }
+  .toc a.active {
+    color: var(--amber);
+    border-left-color: var(--amber);
+  }
+  .toc a.active .num { color: var(--amber); }
+
+  .toc details { margin-top: 1.4rem; }
+  .toc summary {
+    cursor: pointer;
+    color: var(--ink-faint);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  @media (min-width: 1000px) {
+    .toc-mobile-only { display: none; }
+  }
+  @media (max-width: 999px) {
+    .toc { border-bottom: 1px solid var(--hairline); }
+    .toc-static { display: none; }
+    .toc details[open] summary { margin-bottom: 1rem; }
+  }
+
+  /* ---- main column ----------------------------------------- */
+
+  main {
+    padding: clamp(1.4rem, 4vw, 2.6rem) 0 6rem;
+    min-width: 0;
+  }
+
+  .prose { max-width: var(--measure); }
+
+  .prose p,
+  .prose ul,
+  .prose ol { margin: 0 0 1.1rem; }
+
+  .prose ul, .prose ol { padding-left: 1.3rem; }
+  .prose li { margin-bottom: 0.4rem; }
+  .prose li::marker { color: var(--amber); }
+
+  .prose h2 {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: var(--step-3);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.3rem;
+    text-wrap: balance;
+    scroll-margin-top: 2rem;
+  }
+  .prose h3 {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: var(--step-1);
+    margin: 2.6rem 0 0.6rem;
+    color: var(--ink);
+    scroll-margin-top: 2rem;
+  }
+  .prose h4 {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: var(--step-0);
+    margin: 1.8rem 0 0.4rem;
+    color: var(--ink-mid);
+  }
+
+  .prose strong { font-weight: 600; }
+  .prose em { font-style: italic; }
+
+  .part {
+    border-top: 1px solid var(--hairline);
+    margin-top: 4.5rem;
+    padding-top: 3rem;
+  }
+  .part:first-of-type { border-top: 0; margin-top: 1rem; padding-top: 0; }
+
+  .part-label {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin: 0 0 0.7rem;
+  }
+
+  .rule {
+    font-family: var(--font-mono);
+    color: var(--hairline-hi);
+    letter-spacing: 0.1em;
+    margin: 0.6rem 0 1.9rem;
+    overflow: hidden;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  /* ---- on-screen buttons ---------------------------------- */
+
+  kbd {
+    font-family: var(--font-mono);
+    font-size: 0.82em;
+    font-weight: 500;
+    line-height: 1;
+    display: inline-block;
+    padding: 0.24em 0.55em 0.3em;
+    background: var(--keycap-bg);
+    color: var(--keycap-ink);
+    border: 1px solid var(--keycap-edge);
+    border-radius: 7px;
+    white-space: nowrap;
+  }
+
+  /* ---- notes / callouts ------------------------------------ */
+
+  .note {
+    max-width: var(--measure);
+    border-left: 2px solid var(--amber);
+    background: color-mix(in srgb, var(--surface-2) 60%, transparent);
+    padding: 0.9rem 1.1rem 0.9rem 1.05rem;
+    margin: 1.6rem 0;
+    font-size: var(--step--1);
+    color: var(--ink-mid);
+  }
+  .note::before {
+    content: "\25B8";
+    color: var(--amber);
+    font-family: var(--font-mono);
+    margin-right: 0.6em;
+  }
+  .note.warn { border-left-color: var(--red); }
+  .note.warn::before { content: "\26A0"; color: var(--red); }
+  .note strong { color: var(--ink); }
+
+  /* ---- tables --------------------------------------------- */
+
+  .t-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 1.4rem 0 1.8rem;
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: var(--step--1);
+    font-variant-numeric: tabular-nums;
+  }
+  caption {
+    caption-side: top;
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding: 0 0 0.7rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.55rem 0.85rem;
+    border-bottom: 1px solid var(--hairline);
+    vertical-align: top;
+  }
+  thead th {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--hairline-hi);
+    position: sticky;
+    top: 0;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: color-mix(in srgb, var(--surface-2) 45%, transparent); }
+  td .mono, th .mono { font-family: var(--font-mono); }
+  td code { white-space: nowrap; }
+
+  .num-col { text-align: right; font-family: var(--font-mono); white-space: nowrap; }
+
+  /* ---- inline code / glyph ------------------------------- */
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    background: var(--surface-2);
+    padding: 0.1em 0.38em;
+    border-radius: 3px;
+    color: var(--ink);
+  }
+  .glyph { color: var(--amber); font-family: var(--font-mono); }
+  .glyph-c { color: var(--cyan); font-family: var(--font-mono); }
+  .glyph-g { color: var(--green); font-family: var(--font-mono); }
+
+  pre.block {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    line-height: 1.55;
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    padding: 1rem 1.1rem;
+    overflow-x: auto;
+    margin: 1.4rem 0;
+    color: var(--ink-mid);
+  }
+  pre.block .c { color: var(--ink-faint); }
+
+  /* ---- definition-style lists --------------------------- */
+
+  dl.defs { margin: 1.2rem 0 1.8rem; }
+  dl.defs div {
+    display: grid;
+    grid-template-columns: minmax(6.5rem, 8rem) 1fr;
+    gap: 0.4rem 1.2rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  dl.defs div:last-child { border-bottom: 0; }
+  dl.defs dt {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: var(--step--1);
+    color: var(--amber);
+  }
+  dl.defs dd { margin: 0; font-size: var(--step--1); color: var(--ink-mid); }
+  @media (max-width: 540px) {
+    dl.defs div { grid-template-columns: 1fr; gap: 0.15rem; }
+  }
+
+  /* ---- footer -------------------------------------------- */
+
+  .colophon {
+    border-top: 1px solid var(--hairline);
+    margin-top: 5rem;
+    padding-top: 2rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--ink-faint);
+    max-width: var(--measure);
+  }
+  .colophon p { margin: 0 0 0.6rem; }
+
+  .lede {
+    font-size: var(--step-1);
+    color: var(--ink-mid);
+    max-width: 52ch;
+    margin: 0 0 1.6rem;
+  }
+</style>
+<style>
+  img { max-width: 100%; height: auto; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="masthead">
+    <p class="eyebrow">Player Manual &nbsp;·&nbsp; v0.1</p>
+    <h1><span class="at">@</span> Terminal&nbsp;Life</h1>
+    <p class="standfirst">A life‑sim in your pocket. You are a person with a place of their own on a quiet street in an endless town, a phone in their pocket, and a lot of self‑improvement to get on with. This manual explains all of it.</p>
+
+    <div class="screen-wrap" role="img" aria-label="A mock-up of the Terminal Life screen: a top bar with location and weather, a small floor-plan of a home with the player shown as an at-sign, six need meters and a status line, then an on-screen D-pad on the left, Use and Esc buttons on the right, and a wrapping row of contextual buttons along the bottom.">
+      <div class="screen-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span> &nbsp;the whole screen</div>
+<pre class="screen"> <span class="p">Terminal Life</span>  home · living room             <span class="c">&#9730; rain</span> · Wed  <span class="w">14:20</span>
+                 <span class="d">#####</span><span class="w">"</span><span class="d">######</span><span class="w">"</span><span class="d">####</span><span class="w">"</span><span class="d">####</span><span class="w">"</span><span class="d">##</span>
+                 <span class="d">#</span>    <span class="w">o</span>   <span class="d">#</span>    <span class="d">#</span>    <span class="d">#</span>    <span class="d">#</span>    <span class="w">o</span> toilet  <span class="w">S</span> stove
+                 <span class="d">#</span><span class="w">/</span>       <span class="d">#</span>    <span class="d">#</span>    <span class="d">#</span>    <span class="d">#</span>    <span class="w">F</span> fridge  <span class="w">D</span> desk
+                 <span class="d">#</span>   <span class="p">@</span>    <span class="d">#</span>    <span class="d">#</span>    <span class="w">'</span>   <span class="w">D</span><span class="d">#</span>    <span class="w">=</span> bed     <span class="w">C</span> computer
+                 <span class="d">#</span><span class="w">%%</span>      <span class="d">#</span>    <span class="d">#</span><span class="w">E</span>  <span class="w">D</span><span class="d">#</span><span class="w">C</span>   <span class="d">#</span>    <span class="w">%</span> sofa
+                 <span class="d">#####</span><span class="g">+</span><span class="d">######</span><span class="w">"</span><span class="d">####</span><span class="w">"</span><span class="d">####</span><span class="w">"</span><span class="d">##</span>
+ Hun <span class="warn">&#9608;&#9608;&#9608;&#9608;</span><span class="d">&#9617;&#9617;&#9617;</span> 58  Nrg <span class="good">&#9608;&#9608;&#9608;&#9608;&#9608;</span><span class="d">&#9617;&#9617;</span> 71  Hyg <span class="good">&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;</span><span class="d">&#9617;</span> 80  Bla <span class="warn">&#9608;&#9608;&#9608;</span><span class="d">&#9617;&#9617;&#9617;&#9617;</span> 44
+ Soc <span class="warn">&#9608;&#9608;&#9608;&#9608;</span><span class="d">&#9617;&#9617;&#9617;</span> 55  Fun <span class="good">&#9608;&#9608;&#9608;&#9608;&#9608;</span><span class="d">&#9617;&#9617;</span> 66
+ <span class="k">$120</span>  HP <span class="good">100</span>  mood: <span class="w">content</span>  <span class="c">&#9670; coffee with Renata 15:00</span>
+   <span class="w">&#9650;</span>                                    <span class="g">[ Use ]</span>
+ <span class="w">&#9664; &#9679; &#9658;</span>                                  <span class="k">[ Esc ]</span>
+   <span class="w">&#9660;</span>
+ <span class="k">[ you ][ phone ][ map ][ build ][ auto ][ &#8943; ]</span><span class="cursor">&#9608;</span></pre>
+      <p class="screen-note">The map is centred on you. Six meters and a status line; then the <strong>D‑pad</strong>, the <strong>Use</strong> and <strong>Esc</strong> buttons, and a row of <strong>contextual buttons</strong> along the bottom that changes with whatever you're doing. Nothing is hidden — everything in this manual is a button or a tap away.</p>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <nav class="toc" aria-label="Contents">
+      <div class="toc-static">
+        <h2>Contents</h2>
+        <ol>
+          <li><a href="#start"><span class="num">I</span>The first day</a></li>
+          <li><a href="#alive"><span class="num">II</span>Staying alive</a></li>
+          <li><a href="#better"><span class="num">III</span>Getting better</a></li>
+          <li><a href="#money"><span class="num">IV</span>Money</a></li>
+          <li><a href="#people"><span class="num">V</span>People</a></li>
+          <li><a href="#world"><span class="num">VI</span>The world</a></li>
+          <li><a href="#long"><span class="num">VII</span>The long game</a></li>
+          <li><a href="#ref"><span class="num">&#8734;</span>Reference</a></li>
+        </ol>
+      </div>
+      <details class="toc-mobile-only" open>
+        <summary>Contents</summary>
+        <ol>
+          <li><a href="#start"><span class="num">I</span>The first day</a></li>
+          <li><a href="#alive"><span class="num">II</span>Staying alive</a></li>
+          <li><a href="#better"><span class="num">III</span>Getting better</a></li>
+          <li><a href="#money"><span class="num">IV</span>Money</a></li>
+          <li><a href="#people"><span class="num">V</span>People</a></li>
+          <li><a href="#world"><span class="num">VI</span>The world</a></li>
+          <li><a href="#long"><span class="num">VII</span>The long game</a></li>
+          <li><a href="#ref"><span class="num">&#8734;</span>Reference</a></li>
+        </ol>
+      </details>
+    </nav>
+
+    <main>
+
+      <!-- ============================ PART I ============================ -->
+      <section class="part" id="start">
+        <p class="part-label">Part I</p>
+        <div class="prose">
+          <h2>The first day</h2>
+          <div class="rule">────────────────────────────────────────────────</div>
+
+          <p class="lede">You wake at 07:30 on a Monday, in a furnished home on a street where you already know a few of the neighbours, with <strong>$120</strong> and a fortnight before the rent starts.</p>
+
+          <p>When a new game starts you’re asked two things: <strong>where you’re coming from</strong> (a background — it tilts your starting stats and hands you a trait) and <strong>what you want to work toward</strong> (an aspiration — a goal you can change any time). Pick both or take “decide later”. Then the screen above is yours.</p>
+
+          <div class="note">Everything is a <strong>tap</strong> or a <strong>swipe</strong>. The controls live around the screen edge — the D‑pad bottom‑left, <kbd>Use</kbd> and <kbd>Esc</kbd> bottom‑right, and a bottom row of buttons that changes with what you’re doing. The full list is in <a href="#ref">the Reference</a>.</div>
+
+          <h3>Moving, and how time works</h3>
+          <p>Walk with the <strong>D‑pad</strong>, or <strong>swipe</strong> across the map. Hold a D‑pad arrow to keep going. <strong>One step is one minute of game time.</strong> The clock only moves when you do — while you sit reading this, nothing in the game changes. An activity (a meal, a study session, a shift) advances the clock by however long it takes, and your other needs quietly drain across it.</p>
+
+          <h3>Doors</h3>
+          <p>Your own front door <span class="glyph-g">glows green</span>. Step onto it to go in or out. Roads run out of town, across the countryside, to the next town — the world doesn’t stop at the edge of the screen.</p>
+          <p>Everyone else’s door is shut. Walk into one — or tap <kbd>Use</kbd> beside it — to <strong>knock</strong>. They might be out; they might not ask you in. The better they know you, the better your chances. You can’t use a stranger’s things; a <strong>close friend’s</strong> home, though, is open to you like your own.</p>
+
+          <h3>Using things</h3>
+          <p>Tap <kbd>Use</kbd> next to a piece of furniture — or just <strong>walk into it</strong>, or tap it on the map — to use it. A desk to study, a stove to cook, a bed to sleep, an easel to paint. If it does more than one thing, a little menu opens. Some activities are <a href="#minigames">mini‑games</a> you can play for a better result — or tap <kbd>skip</kbd> for the standard one.</p>
+
+          <h3>Three buttons you’ll live in</h3>
+          <p>Along the bottom of the play screen, the contextual buttons include:</p>
+          <dl class="defs">
+            <div><dt><kbd>you</kbd></dt><dd>Your character sheet. Six tabs — <strong>Subjects, Skills, Life, People, Goals, Log</strong>; tap a tab, or step through with the D‑pad. <kbd>close</kbd> leaves it.</dd></div>
+            <div><dt><kbd>map</kbd></dt><dd>The wider world, and a <strong>fast‑travel list</strong> of everywhere you’ve been. Tap a place to go.</dd></div>
+            <div><dt><kbd>phone</kbd></dt><dd>Always in your pocket, works anywhere. Call and text people, browse, play a game, order books and food, sort out housing and bills, look for work, enrol at the college, make plans, buy a bike, adopt a pet, check your manuscript, look at the map.</dd></div>
+          </dl>
+
+          <h3>Menus</h3>
+          <p><strong>Tap the choice you want.</strong> A long list wraps and scrolls; tap any line of a choice to pick it. Or step through with the D‑pad and <kbd>OK</kbd>. <kbd>back</kbd> (or <kbd>Esc</kbd>) leaves.</p>
+
+          <h3>Letting it play itself</h3>
+          <dl class="defs">
+            <div><dt><kbd>auto</kbd></dt><dd>Hands‑off <strong>autopilot</strong>. It walks to and uses whatever need is lowest, does freelance, studies, roams a little — at a watchable pace, with a line along the bottom saying what it’s up to. If you haven’t set an aspiration it picks one, works its milestones, and moves on to a new one when it lands (or when it’s plainly stuck). A tap anywhere takes the wheel back.</dd></div>
+            <div><dt><kbd>goal</kbd></dt><dd>Give autopilot a <strong>standing goal</strong> — make money, build a skill, study a subject, get closer to someone — which it leans into while still keeping your needs met. This overrides the aspiration it would otherwise chase.</dd></div>
+            <div><dt><kbd>rest</kbd></dt><dd>A quick <strong>routine</strong>: head home and, only for the needs actually run down, use the toilet, cook and eat, take a nap — then hand control straight back.</dd></div>
+          </dl>
+          <div class="note">Autopilot lives at home. It studies, works and tends its needs, but it won’t set out to explore or knock on doors, and it skips every mini‑game and does the plain version instead.</div>
+
+          <h3>The pause menu</h3>
+          <p>The <kbd>pause</kbd> button opens it: <strong>resume</strong>, <strong>save now</strong>, the story so far, <strong>how to play</strong> (this manual), <strong>the week in review</strong>, <strong>look back on your life</strong> (once you’ve a couple of years behind you), and back to the title. The game saves itself as you go and picks up exactly where you left off — one slot, one life.</p>
+        </div>
+      </section>
+
+      <!-- ============================ PART II ============================ -->
+      <section class="part" id="alive">
+        <p class="part-label">Part II</p>
+        <div class="prose">
+          <h2>Staying alive</h2>
+          <div class="rule">────────────────────────────────────────────────</div>
+
+          <p class="lede">Six needs drain all day. Keep them healthy and your mood stays up; let one bottom out and there are consequences.</p>
+
+          <div class="t-wrap">
+            <table>
+              <caption>The six needs</caption>
+              <thead>
+                <tr><th>Need</th><th>Fill it with</th><th>Notes</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="mono">Hunger</td><td>A cooked meal, a sit‑down meal, or takeout fills it completely. Leftovers most of the way; a snack takes the edge off.</td><td>Higher <strong>Cooking</strong> means more hunger filled per pot.</td></tr>
+                <tr><td class="mono">Energy</td><td>Sleep. A bed at night fast‑forwards to <strong>05:30 on full energy</strong>; a daytime nap only tops it up.</td><td>Drains faster and faster through the evening — see below. <strong>Fitness</strong> slows the drain.</td></tr>
+                <tr><td class="mono">Hygiene</td><td>Shower, bath, kitchen or bathroom sink.</td><td>Drains quicker while you’re outdoors in the rain or snow.</td></tr>
+                <tr><td class="mono">Bladder</td><td>The toilet. Nothing else will do.</td><td>Ignore it long enough and you won’t make it in time. Mortifying.</td></tr>
+                <tr><td class="mono">Social</td><td>Call or text a friend, the sofa, the café, a group night in.</td><td>Being around people is worth more than being on the phone.</td></tr>
+                <tr><td class="mono">Fun</td><td>TV, novels, painting, piano, toys, the phone, a day out.</td><td>The “junk‑fun” phone options hit hardest but cost energy and teach nothing.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Energy and the evening</h3>
+          <p>Energy drains at a flat rate through the day, then <strong>climbs steeply from about 7pm</strong> — roughly two‑and‑a‑half times as fast by 11pm, and deepest in the small hours. Staying up late is a losing battle. Sleeping in a bed <strong>from 8pm</strong> skips the night entirely and you wake at 05:30 rested — but starving and desperate for the bathroom, so keep groceries in and the toilet close. Save your real sleep for the night; a nap is a stopgap.</p>
+
+          <h3>Mood, and why it runs everything</h3>
+          <p>Mood is roughly the <strong>average of your six needs</strong>, nudged by a long list of smaller things: where you live and whether the rent’s paid, a cold or a bright morning, the calm of the library, the season, the weather, a shelf of your own work, a happy pet, your wardrobe, being burnt out. It runs from about <strong>&times;0.4 to &times;1.35</strong> and it multiplies almost every good outcome — XP gained, money earned, fun restored, words written. Letting your needs slide quietly makes everything else less effective.</p>
+
+          <h3>Health</h3>
+          <p>Health sits at 100 and mostly looks after itself. It <strong>drains</strong> while hunger, energy or hygiene is at zero, and <strong>recovers</strong> when your core needs are all above 30 (faster with <strong>Wellness</strong>). If health gives out, that’s the end of the run. You can also collapse from exhaustion — you’ll sleep where you fall and lose the time.</p>
+
+          <h3>Weather</h3>
+          <p>Each day has a condition — <span class="glyph-c">&#9728;</span> glorious, clear, fair, overcast, <span class="glyph-c">&#8776;</span> fog, <span class="glyph-c">&#9730;</span> rain, a storm, <span class="glyph-c">&#10052;</span> snow, a blizzard, a heatwave — shown in the top bar. Rain and worse make being outdoors more tiring and cost you hygiene; a <strong>storm or blizzard shuts every public building</strong>. Weather leans on the season: heatwaves in summer, cold snaps and snow in winter.</p>
+
+          <h3>The rough stretches</h3>
+          <h4>Burnout</h4>
+          <p>A hidden strain meter fills when you do demanding things (long sessions, big energy costs) while already tired or low, and empties when you rest or have fun. Max it out and you’re <strong>burnt out for about a week</strong>: mood drops hard and everything you do earns less (XP &times;0.7). You’ll get a warning first — <em>running on fumes</em>. Ease right off and it lifts early.</p>
+          <h4>Injury</h4>
+          <p>A hard fitness session — or an unlucky misstep event — can leave you with a <strong>turned ankle, a pulled muscle or a bad back</strong>: no fitness training for five to seven days, a small energy penalty, and a clinic bill (<span class="mono">$30–90</span>) the next day. It always passes.</p>
+          <div class="note warn">Both burnout and injury are more likely when you push while exhausted. If the strain warning shows, take a couple of easy days — a nap, a novel, a walk.</div>
+        </div>
+      </section>
+
+      <!-- ============================ PART III ============================ -->
+      <section class="part" id="better">
+        <p class="part-label">Part III</p>
+        <div class="prose">
+          <h2>Getting better</h2>
+          <div class="rule">────────────────────────────────────────────────</div>
+
+          <p class="lede">Fourteen school subjects and twelve life skills, each a number from 0 to 10, raised by doing the right thing in the right place.</p>
+
+          <h3>The curve</h3>
+          <p>A level costs XP on a <strong>square curve</strong>: cumulative XP for level <em>L</em> is <span class="mono">12 &times; L&sup2;</span>. Level 1 is one or two focused hours; level 10 is well over a hundred. Every stat caps at 10.</p>
+
+          <h3>The multiplier stack</h3>
+          <p>The XP an activity gives is its base rate times, all stacked together:</p>
+          <ul>
+            <li><strong>Mood</strong> — &times;0.4 to &times;1.35.</li>
+            <li><strong>Momentum</strong>, from a streak of consecutive days growing any stat — +2% per day past the first two, capping at &times;1.25.</li>
+            <li><strong>Logic</strong>, if the activity studies a subject — +5% per level, on <em>every</em> subject.</li>
+            <li><strong>Focus</strong>, on long work like study and freelance — +4% per level.</li>
+            <li><strong>A venue perk</strong> — the gym multiplies a workout by 1.45, the library multiplies study by 1.3, the museum multiplies art history by 1.35, and so on.</li>
+            <li><strong>A trait</strong> — Bookworm reads 1.22&times;, Gym Rat trains 1.2&times;.</li>
+            <li><strong>A degree</strong> — 1.12&times; on its subjects, for the rest of the game.</li>
+          </ul>
+          <p>Two skills are pure force multipliers and worth raising early: <strong>Logic</strong> (faster studying, everything) and <strong>Focus</strong> (deeper long sessions). <strong>Fitness</strong> slows how fast energy drains; <strong>Cooking</strong> fills more hunger per meal; <strong>Wellness</strong> recovers needs faster and lifts your mood floor.</p>
+          <h3>Momentum</h3>
+          <p>Grow any subject or skill two days running and a streak starts; keep doing it daily and Momentum climbs, capping at <strong>+25%</strong> to every XP gain. Miss a whole day with nothing to show for it and the streak resets — the next qualifying action starts a fresh one at day one. Check the Life tab to see the current streak, its best, and the live multiplier.</p>
+
+          <h3>Where you learn each thing</h3>
+          <div class="t-wrap">
+            <table>
+              <caption>The main activities</caption>
+              <thead><tr><th>Where</th><th>Does</th><th>Grows</th></tr></thead>
+              <tbody>
+                <tr><td class="mono">Desk</td><td>Study a subject · problem sets · maths drills · word workout · flashcards · the manuscript</td><td>any subject, English, Writing, Logic</td></tr>
+                <tr><td class="mono">Computer</td><td>Online course · a coding project · practise typing · freelance work · order things</td><td>any subject, Programming, Writing, Focus</td></tr>
+                <tr><td class="mono">Bookshelf</td><td>Read a book you own · a novel · poetry</td><td>the book’s subject; English, Creativity</td></tr>
+                <tr><td class="mono">Stove</td><td>Cook a meal <span class="d">(the cooking‑line mini‑game)</span></td><td>Cooking, Health</td></tr>
+                <tr><td class="mono">Piano / guitar</td><td>Practise <span class="d">(the rhythm mini‑game)</span></td><td>Music, Music Theory</td></tr>
+                <tr><td class="mono">Easel</td><td>Paint <span class="d">(the colour‑match mini‑game)</span></td><td>Creativity, Art History</td></tr>
+                <tr><td class="mono">Treadmill / TV</td><td>Go for a run · a workout video <span class="d">(the step trainer)</span></td><td>Fitness, PE</td></tr>
+                <tr><td class="mono">Weight bench</td><td>Lift</td><td>Fitness, PE</td></tr>
+                <tr><td class="mono">Workbench</td><td>Tinker <span class="d">(the circuit mini‑game)</span></td><td>Handiness, Creativity, Science</td></tr>
+                <tr><td class="mono">Houseplant</td><td>Tend the plants</td><td>Gardening, Biology</td></tr>
+                <tr><td class="mono">Bath / shower</td><td>A long soak</td><td>Wellness</td></tr>
+                <tr><td class="mono">Phone</td><td>Journal · language streak · a documentary · a podcast · edit photos</td><td>Writing, Language, small spreads</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Books</h3>
+          <p>Every subject is a <strong>category of books</strong>. A shelf runs:</p>
+          <dl class="defs">
+            <div><dt>intro</dt><dd>Cheap, short, gentle. Good for getting going.</dd></div>
+            <div><dt>core</dt><dd>The steady workhorse — and it often builds a helper skill.</dd></div>
+            <div><dt>advanced</dt><dd>Dear, a slog, and needs a few levels first — but teaches fastest once you can use it.</dd></div>
+            <div><dt>reader</dt><dd>Low and slow, cross‑subject, and genuinely <em>fun</em>.</dd></div>
+          </dl>
+          <p>Buy them <strong>online</strong> (phone or computer — delivered next day, price varies by subject), <strong>off the rack at the Corner Shop</strong> (a $4 markup, but instant), or read <strong>any of the forty‑seven titles free at the Public Library</strong> without owning them.</p>
+
+          <h3 id="minigames">Mini‑games</h3>
+          <p>A lot of activities are playable rather than automatic, and <strong>every one is optional</strong>. Tap <kbd>skip</kbd> and you get the activity's plain result — exactly what autopilot gets, no penalty (you still spend the time and do the thing). <strong>Playing it through raises the reward</strong>: a finished flop is worth about <span class="mono">1.1&times;</span>, a clean run <span class="mono">1.65&times;</span>, scaling with your score from 0 to 1. Finishing also counts toward your <strong>mini‑games won</strong> tally (a score of 0.6 or better) on <kbd>you</kbd> &rarr; Life. Difficulty rises with your relevant skill level — higher level, harder round, higher ceiling. Each mini‑game puts the buttons it needs in the bottom row; the typing ones bring up the keyboard with <kbd>&#9000;</kbd>.</p>
+          <div class="t-wrap">
+            <table>
+              <caption>All sixteen</caption>
+              <thead><tr><th>Game</th><th>Where</th><th>How it plays</th></tr></thead>
+              <tbody>
+                <tr><td class="mono">Rhythm</td><td>piano, guitar</td><td>Notes fall in four lanes; tap the lane buttons (<kbd>D</kbd> <kbd>F</kbd> <kbd>J</kbd> <kbd>K</kbd>) on the beat.</td></tr>
+                <tr><td class="mono">Step Trainer</td><td>a run, a workout video</td><td>The same, on the D‑pad.</td></tr>
+                <tr><td class="mono">Cooking Line</td><td>the stove</td><td>Tap <kbd>space</kbd> when the marker’s in the green, six stations down the line.</td></tr>
+                <tr><td class="mono">Debug Puzzle</td><td>coding · software &amp; research freelance</td><td>Read the little program, tap the answer — <kbd>1</kbd> to <kbd>4</kbd>.</td></tr>
+                <tr><td class="mono">Typing Sprint</td><td>practise typing · writing &amp; media freelance</td><td>Type the line against the clock; speed &times; accuracy.</td></tr>
+                <tr><td class="mono">Colour Match</td><td>the easel</td><td>Mix R G B with the D‑pad to hit the target swatch, then <kbd>lock</kbd> it.</td></tr>
+                <tr><td class="mono">Circuit</td><td>the workbench · repair freelance</td><td>D‑pad to move, <kbd>rotate</kbd> to turn a pipe until power reaches the device.</td></tr>
+                <tr><td class="mono">Arithmetic Sprint</td><td>maths drills at the desk</td><td>Twelve mental‑maths problems. Type each answer.</td></tr>
+                <tr><td class="mono">Word Workout</td><td>a word workout at the desk</td><td>Unscramble eight words; tap <kbd>hint</kbd> if you’re stuck (it costs you).</td></tr>
+                <tr><td class="mono">Flashcard Recall</td><td>flashcards at the desk</td><td>Think, tap <kbd>flip</kbd>, then <kbd>knew it</kbd> / <kbd>missed</kbd>.</td></tr>
+                <tr><td class="mono">Snake · Minesweeper · 2048 · Sliding Puzzle · Memory · Block&nbsp;Drop</td><td>phone &rarr; Play a mobile game</td><td>The arcade. Personal bests tracked. The puzzle ones train a little logic or focus.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>The community college</h3>
+          <p>At the college (always the town <strong>due east of home</strong>), enrol in a programme for <span class="mono">$220</span>:</p>
+          <p class="mono" style="color:var(--ink-mid);font-size:var(--step--1)">Natural Sciences · Humanities · Computer Science · Business &amp; Economics · Fine Arts · Health Sciences</p>
+          <p>A term runs <strong>56 days</strong>. Go to <strong>16 classes</strong> at the noticeboard and get <strong>every one of the programme’s subjects to level 4</strong>, and you graduate with a <strong>degree</strong> — a lasting <span class="mono">1.12&times;</span> to those subjects, a title, and the credential for the lecturing job. Fall short and the term ends without it; you can re‑enrol.</p>
+
+          <h3>Mastery</h3>
+          <p>Take any skill or subject to <strong>level 10</strong> and you become a <em>Master</em> of it — a permanent title, and the standing to <strong>teach it</strong> (phone &rarr; Tutor someone) to people you know: <span class="mono">$40</span> an hour and a step closer.</p>
+        </div>
+      </section>
+
+      <!-- ============================ PART IV ============================ -->
+      <section class="part" id="money">
+        <p class="part-label">Part IV</p>
+        <div class="prose">
+          <h2>Money</h2>
+          <div class="rule">────────────────────────────────────────────────</div>
+
+          <p class="lede">You start with $120 and two rent‑free weeks. After that, $121 a week comes out whether you’ve earned it or not.</p>
+
+          <h3>Groceries and meals</h3>
+          <p>A proper meal — cook, sit down, or takeout — fills hunger completely, so keep groceries in. Order them from a computer or the phone (<span class="mono">$24</span> for six), or from the Corner Shop instantly. A cooked meal also trains Cooking; leftovers and snacks don’t.</p>
+
+          <h3>Freelance</h3>
+          <p>On a computer. Pick a <strong>field</strong>, then a <strong>job</strong>. Jobs run from <strong>tier 1</strong> (needs no skill, pays least) to <strong>tier 5</strong> (two skills at high level, pays a lot). The list leads with the best tier you can currently do, and <em>every</em> job grows at least the skill or subject it asked for — so working your way up a field is self‑sustaining and never leaves you stuck needing to go train elsewhere.</p>
+          <div class="t-wrap">
+            <table>
+              <caption>The ten fields</caption>
+              <thead><tr><th>Field</th><th>Field</th></tr></thead>
+              <tbody>
+                <tr><td>Writing &amp; Editing</td><td>Business &amp; Finance</td></tr>
+                <tr><td>Software &amp; IT</td><td>Handywork &amp; Repair</td></tr>
+                <tr><td>Tutoring &amp; Teaching</td><td>Health &amp; Wellness</td></tr>
+                <tr><td>Design &amp; Illustration</td><td>Media &amp; Communications</td></tr>
+                <tr><td>Music &amp; Audio</td><td>Research &amp; Data</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Software and Research jobs open the <strong>Debug puzzle</strong>; Writing and Media jobs the <strong>Typing sprint</strong> — do well and the pay nudges up. Each job shows a pay estimate; the amount you actually get wobbles a little.</p>
+
+          <h3>Salaried jobs</h3>
+          <p>Steadier than freelance, and with a ladder. Apply from the phone; the interview is a <strong>charisma check</strong> (there’s a “prepare first” option — +22% odds, but it takes the afternoon). Then you work <strong>shifts on a schedule</strong>. Walk into your workplace during the shift window and you’re offered the clock‑in. <strong>Miss three shifts and you’re let go.</strong> Promotions at roughly 20 and 30 shifts bump your title and pay by a quarter to a half.</p>
+          <div class="t-wrap">
+            <table>
+              <caption>The seven</caption>
+              <thead><tr><th>Job</th><th>Where</th><th class="num-col">Base / shift</th><th>Asks for</th></tr></thead>
+              <tbody>
+                <tr><td>Barista</td><td>the café</td><td class="num-col">$46</td><td>—</td></tr>
+                <tr><td>Shop assistant</td><td>the corner shop</td><td class="num-col">$42</td><td>—</td></tr>
+                <tr><td>Library assistant</td><td>the library</td><td class="num-col">$54</td><td>English 3</td></tr>
+                <tr><td>Gym floor trainer</td><td>the gym</td><td class="num-col">$58</td><td>Fitness 4</td></tr>
+                <tr><td>Museum guide</td><td>a museum</td><td class="num-col">$56</td><td>Art History 3</td></tr>
+                <tr><td>Baker’s hand</td><td>a bakery</td><td class="num-col">$50</td><td>Cooking 3</td></tr>
+                <tr><td>Teaching assistant</td><td>the college</td><td class="num-col">$74</td><td>a degree</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Rent and bills</h3>
+          <p>Your deposit covers the first two weeks. From <strong>Day 15</strong>, every seven days: <span class="mono">$88</span> rent + <span class="mono">$22</span> utilities + <span class="mono">$11</span> phone = <strong>$121</strong>, paid automatically. Check <em>phone &rarr; Housing &amp; bills</em> for where you stand.</p>
+          <ul>
+            <li>Can’t cover it → <strong>arrears</strong> stack up and the warnings escalate.</li>
+            <li><strong>Three missed weeks</strong> → evicted to a rented room across town: cheaper (<span class="mono">$42</span>/wk) but it wears on you.</li>
+            <li>From the room, a clean payment record plus some savings gets you a proper lease again.</li>
+            <li><strong>Buy the place outright for <span class="mono">$6,000</span></strong> → no rent ever again, and a standing lift to your mood.</li>
+          </ul>
+          <div class="note">The single most reliable early game is a few tier‑1 freelance jobs a day until you can cover rent, then a salaried job for the schedule and the ladder. The autopilot proves you can bank tens of thousands — money stops being a problem by about week three.</div>
+
+          <h3>Getting around</h3>
+          <p>Fast‑travel from the <kbd>map</kbd> button to anywhere you’ve been; time and energy scale with distance. On foot it’s slow. Buy wheels from <em>phone &rarr; Get around</em>:</p>
+          <dl class="defs">
+            <div><dt>a bike</dt><dd><span class="mono">$180</span> — roughly halves every trip, and it’s free to run.</dd></div>
+            <div><dt>a car</dt><dd><span class="mono">$2,400</span> — cuts a trip to about a third; the whole map opens up. Trades your bike in.</dd></div>
+          </dl>
+
+          <h3>The manuscript</h3>
+          <p>At the desk, <em>Work on your manuscript</em> — a word count that grows across sessions, faster with Writing, Creativity, Focus and a good mood. Around <strong>40,000 words</strong> is a full draft; send it out from <em>phone &rarr; Your manuscript</em> for a cheque and <strong>a book with your name on it, on your shelf for good</strong>. The next one runs a little longer.</p>
+        </div>
+      </section>
+
+      <!-- ============================ PART V ============================ -->
+      <section class="part" id="people">
+        <p class="part-label">Part V</p>
+        <div class="prose">
+          <h2>People</h2>
+          <div class="rule">────────────────────────────────────────────────</div>
+
+          <p class="lede">Every house has someone living in it, with a life of their own. You begin knowing the neighbours on your street.</p>
+
+          <h3>The rapport scale</h3>
+          <div class="t-wrap">
+            <table>
+              <caption>0 to 100</caption>
+              <thead><tr><th class="num-col">Rapport</th><th>Standing</th></tr></thead>
+              <tbody>
+                <tr><td class="num-col">0</td><td>a stranger</td></tr>
+                <tr><td class="num-col">1–14</td><td>barely know them</td></tr>
+                <tr><td class="num-col">15–37</td><td>an acquaintance</td></tr>
+                <tr><td class="num-col">38–61</td><td>a friend</td></tr>
+                <tr><td class="num-col">62–84</td><td>a close friend — <strong>their home opens to you</strong></td></tr>
+                <tr><td class="num-col">85+</td><td>family, basically</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Meeting people, and their schedules</h3>
+          <p>Knock on doors to meet more. Whether someone’s <strong>in</strong> depends on who they are: a grafter is out through the working day, a retiree is usually home, a socialite is out most evenings. Whether they <strong>ask you in</strong> depends on how well they know you.</p>
+
+          <h3>Calling and texting</h3>
+          <p>From the phone. A call is worth more than a text; <strong>Charisma</strong> makes both land better. About a third of the time you’ll get someone talking about <strong>their thing</strong> — extra rapport, and if they’re a <strong>mentor</strong> (a scholar, an artist, a retiree — teachers, researchers, illustrators, potters), a little of what they know rubs off and you gain some of their field.</p>
+
+          <h3>Your rival</h3>
+          <p>Once you know four people, the one you’re closest to who <em>isn’t</em> a mentor becomes your <strong>rival</strong> in their field. Their level climbs steadily with the days; you’ll hear about it when the standings shift one way or the other.</p>
+
+          <h3>Plans</h3>
+          <p>Someone you call might suggest getting together — coffee, a meal, a walk, the gym, a proper catch‑up — one to three days out. Say yes and it’s in your diary (the <span class="glyph-c">&#9670;</span> line on the HUD, and <em>phone &rarr; Plans</em>). You can propose plans yourself, too.</p>
+          <ul>
+            <li>Turn up at the right place within about <strong>75 minutes</strong> of the time → a good hour and a real step closer (<span class="mono">+8 to +12</span> rapport).</li>
+            <li>Let the time pass without showing → <strong>you stood them up</strong> (<span class="mono">&minus;6</span> rapport).</li>
+          </ul>
+
+          <h3>Friend groups</h3>
+          <p>Friends who live on the same street know each other. Once you’re friendly (<span class="mono">rapport &ge; 30</span>) with <strong>three or more in one group</strong>, <em>phone &rarr; Get the group together</em> for an evening in — big fun and social, everyone a step closer.</p>
+
+          <h3>When a friend’s going through something</h3>
+          <p>About once a week, someone you know hits a rough patch — drowning at work, unwell, low, a big decision. Call them and choose to <strong>really turn up for it</strong>: two hours of your time, <span class="mono">+16</span> rapport, and they owe you one. Ignore it for a fortnight and it passes without you, and the friendship drifts down a little.</p>
+
+          <h3>Birthdays</h3>
+          <p>Yours comes round once a game‑year — a card, <span class="mono">$45</span>, a lighter day, and you turn a year older. Friends have birthdays too; remember one with a call and the rapport jumps.</p>
+        </div>
+      </section>
+
+      <!-- ============================ PART VI ============================ -->
+      <section class="part" id="world">
+        <p class="part-label">Part VI</p>
+        <div class="prose">
+          <h2>The world</h2>
+          <div class="rule">────────────────────────────────────────────────</div>
+
+          <p class="lede">Infinite, and grown from a single number. Coast, farmland, woods and hills; a town in most directions, roads linking them, and — for every town — its houses and the rooms inside each one.</p>
+
+          <h3>Your home town</h3>
+          <p>Four public buildings you just walk into. No knocking — but they keep hours, and a storm or blizzard shuts them all.</p>
+          <div class="t-wrap">
+            <table>
+              <caption>Open to everyone</caption>
+              <thead><tr><th>Place</th><th class="num-col">Hours</th><th>What it’s for</th></tr></thead>
+              <tbody>
+                <tr><td>the Ironworks <span class="d">(gym)</span></td><td class="num-col">06:00–22:30</td><td>Better kit than home — workouts train 1.45&times;. A $6 day pass.</td></tr>
+                <tr><td>the Public Library</td><td class="num-col">09:00–20:00</td><td>Quiet (a focus and mood bonus), and <strong>read any book free</strong>.</td></tr>
+                <tr><td>Grounds Café</td><td class="num-col">07:00–18:00</td><td>A good table, people around; study and work go a little better.</td></tr>
+                <tr><td>the Corner Shop</td><td class="num-col">07:00–23:00</td><td>Groceries and books off the rack, no waiting.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Out in the country</h3>
+          <p>Around every town, a few <strong>points of interest</strong> — walk onto the <span class="glyph">&#9670;</span> marker to find one. Some are refused in the rain.</p>
+          <div class="t-wrap">
+            <table>
+              <thead><tr><th>Spot</th><th>What you do there</th></tr></thead>
+              <tbody>
+                <tr><td class="mono">the fishing spot</td><td>Cast a line (Focus, Wellness, and often something for the pot) · sit and watch the water.</td></tr>
+                <tr><td class="mono">the trailhead</td><td>A long <strong>hike</strong> — Fitness, PE, Geography, and a real lift to your mood. Or a short walk.</td></tr>
+                <tr><td class="mono">the lookout</td><td>Take in the view (Fun, a scrapbook photo) · sketch it (Creativity).</td></tr>
+                <tr><td class="mono">the swimming hole</td><td>Swim — full hygiene, Fitness, best in summer.</td></tr>
+                <tr><td class="mono">the old woods</td><td>Forage — Biology, Gardening, and a bag of free food.</td></tr>
+                <tr><td class="mono">the quiet clearing</td><td>Write out here — a good stretch on the manuscript, with nobody about.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Other towns</h3>
+          <p>Each has <strong>one thing worth the trip</strong>: a bakery, a record shop, a museum, a climbing centre, a playhouse, a lake — and the <strong>community college due east of home</strong>. With a car, they’re all an easy hop.</p>
+        </div>
+      </section>
+
+      <!-- ============================ PART VII ============================ -->
+      <section class="part" id="long">
+        <p class="part-label">Part VII</p>
+        <div class="prose">
+          <h2>The long game</h2>
+          <div class="rule">────────────────────────────────────────────────</div>
+
+          <p class="lede">A game of Terminal Life spans a life — several game‑years — and there are threads that run its whole length.</p>
+
+          <h3>Aspirations</h3>
+          <p>A goal you pick (at the start, or any time from <kbd>you</kbd> &rarr; Goals) as a short ladder of milestones, checked against your real progress. Finishing pays a cash reward and a title. You can only chase one at a time, but you can swap freely.</p>
+          <div class="t-wrap">
+            <table>
+              <caption>All ten</caption>
+              <thead><tr><th>Aspiration</th><th>Roughly</th><th>Title</th></tr></thead>
+              <tbody>
+                <tr><td>Settling In</td><td>a skill to Lv 3, $300 earned, 4 meals cooked</td><td>Settled In</td></tr>
+                <tr><td>Published Author</td><td>Writing &amp; English up, finish a manuscript</td><td>Published Author</td></tr>
+                <tr><td>Peak Condition</td><td>Fitness to Lv 7, 20 workouts</td><td>In Peak Condition</td></tr>
+                <tr><td>Well Read</td><td>own 8 books, read 18 times, six subjects at Lv 4</td><td>Well‑Read</td></tr>
+                <tr><td>Head Chef</td><td>Cooking to Lv 8, 30 meals</td><td>Head Chef</td></tr>
+                <tr><td>Social Butterfly</td><td>know 12 people, four close friends, Charisma Lv 5</td><td>Social Butterfly</td></tr>
+                <tr><td>Nest Egg</td><td>pay rent 6 weeks running, hold $2,500, own your home</td><td>Comfortable</td></tr>
+                <tr><td>Renaissance Person</td><td>five subjects at Lv 5, four skills at Lv 5</td><td>Renaissance Person</td></tr>
+                <tr><td>Turning Pro</td><td>15 freelance jobs, reach freelance tier 4, Focus Lv 5</td><td>Turning Pro</td></tr>
+                <tr><td>Part of the Neighbourhood</td><td>see inside 16 homes, know 10 people, three close friends</td><td>A Local</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Backgrounds</h3>
+          <p>Chosen once, at the start. Each tilts your opening stats, adjusts your wallet, and gives you a starting trait.</p>
+          <div class="t-wrap">
+            <table>
+              <thead><tr><th>Background</th><th>Leans</th><th>Trait</th></tr></thead>
+              <tbody>
+                <tr><td>Art‑school dropout</td><td>Creativity, Art History — a little short on cash</td><td>Expressive</td></tr>
+                <tr><td>Ex‑athlete</td><td>Fitness, PE, Health</td><td>Gym Rat</td></tr>
+                <tr><td>Small‑town transplant</td><td>savings, but no connections</td><td>Frugal</td></tr>
+                <tr><td>Lapsed PhD</td><td>Logic, Focus, the sciences</td><td>Self‑Taught</td></tr>
+                <tr><td>Homemaker between chapters</td><td>Cooking, Wellness, a full pantry</td><td>Nester</td></tr>
+                <tr><td>Just trying to get ahead</td><td>Focus, Charisma, a lot of drive</td><td>Driven</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Traits</h3>
+          <p>Standing perks. You keep your background’s one for good, and <strong>earn</strong> more by living a certain way — they quietly multiply the right XP, slow how fast you tire, or cut what shops charge.</p>
+          <div class="t-wrap">
+            <table>
+              <thead><tr><th>Trait</th><th>Does</th><th>Earned by</th></tr></thead>
+              <tbody>
+                <tr><td>Gym Rat</td><td>Fitness &amp; PE &times;1.2, tire slower</td><td>25 workouts</td></tr>
+                <tr><td>Bookworm</td><td>reading &times;1.22</td><td>20 books read</td></tr>
+                <tr><td>Disciplined</td><td>Focus &amp; Fitness up, tire slower</td><td>30 study sessions</td></tr>
+                <tr><td>Green Thumb</td><td>Gardening &times;1.3, Biology up</td><td>Gardening to Lv 6</td></tr>
+                <tr><td>Social Butterfly</td><td>Charisma &times;1.2, +rapport per call</td><td>three close friends</td></tr>
+                <tr><td>Expressive</td><td>Creativity, Writing, Music up</td><td>Creativity or Music to Lv 6</td></tr>
+                <tr><td>Frugal</td><td>shops and food 15% cheaper</td><td>pay rent on time 10&times;</td></tr>
+                <tr><td>Night Owl / Early Bird</td><td>a softer energy curve at their end of the day</td><td>a background choice</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>The calendar</h3>
+          <p>A month is <strong>28 days</strong>, a season three months, a year <strong>336 days</strong>. Firstlight, Thawmarch, Greentide are spring; Highsun, Longday, Goldfall are summer; Emberfall, Mistmonth, Frostgate are autumn; Deepcold, Stillwinter, Lastfrost are winter. <strong>Summer lifts your mood; deep winter drags and you tire faster.</strong> Weekends help a little. Some events are fixed to a day — the farmers’ market on Saturday, open mic on Thursday.</p>
+
+          <h3>Events</h3>
+          <p>Roughly every third day, <strong>something happens</strong>: you find $20, a neighbour brings food, you catch a cold (energy drains faster for a few days), a heatwave, a cracked phone screen, the café needs a shift covered, a street festival. Windfalls and small setbacks resolve themselves; the <strong>opportunities</strong> ask you to choose.</p>
+
+          <h3>A bit of life</h3>
+          <dl class="defs">
+            <div><dt>A pet</dt><dd>Adopt a dog (<span class="mono">$60</span>) or cat (<span class="mono">$45</span>) from the shelter. Feed it and spend time with it each day, or its happiness slides — and a happy pet lifts the whole house’s mood while a neglected one drags it down.</dd></div>
+            <div><dt>Wardrobe</dt><dd>Four tiers to spend on, each a small standing lift to your mood.</dd></div>
+            <div><dt>Scrapbook</dt><dd>Your outings and milestones collect here — read it back from the phone.</dd></div>
+            <div><dt>Week in review</dt><dd>Every rent day: what your money and levels did, and the week’s highlights.</dd></div>
+          </dl>
+
+          <h3>Build Mode</h3>
+          <p>Tap <kbd>build</kbd> at home. Time freezes and you become a free‑flying cursor — move it with the D‑pad through anything. The bottom row becomes <kbd>wall</kbd>, <kbd>door</kbd>, <kbd>grab</kbd> (pick up and move furniture), <kbd>sell</kbd> (things back for half), <kbd>buy</kbd> (anything the house is missing, from a catalogue), and <kbd>done</kbd>. Edits that would seal a room off are refused. Remodels are saved with the rest of your game.</p>
+
+          <h3>Growing older, and the look‑back</h3>
+          <p>You start somewhere around 20 to 25 and age with the calendar. From the pause menu, after a couple of years, you can <strong>look back on your life</strong> — a score across five parts, an overall, and a verdict:</p>
+          <div class="t-wrap">
+            <table>
+              <thead><tr><th>Measure</th><th>Reads off</th></tr></thead>
+              <tbody>
+                <tr><td class="mono">Accomplished</td><td>aspirations finished, freelance tier, books written, skill levels</td></tr>
+                <tr><td class="mono">Connected</td><td>close friends, people known</td></tr>
+                <tr><td class="mono">Healthy</td><td>health, Fitness, Wellness, workouts</td></tr>
+                <tr><td class="mono">Comfortable</td><td>savings, whether you own your home, rent paid</td></tr>
+                <tr><td class="mono">Learned</td><td>total subject levels, grade, books read</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Cross the natural span — <strong>eight game‑years</strong> — and the look‑back becomes the ending, on your next birthday. You’re free to keep going anyway.</p>
+        </div>
+      </section>
+
+      <!-- ============================ REFERENCE ============================ -->
+      <section class="part" id="ref">
+        <p class="part-label">Appendix</p>
+        <div class="prose">
+          <h2>Reference</h2>
+          <div class="rule">────────────────────────────────────────────────</div>
+
+          <h3>The controls</h3>
+          <div class="t-wrap">
+            <table>
+              <thead><tr><th>Control</th><th>What it does</th></tr></thead>
+              <tbody>
+                <tr><td><kbd>&#9650;</kbd> <kbd>&#9660;</kbd> <kbd>&#9664;</kbd> <kbd>&#9658;</kbd></td><td>The D‑pad — walk one step (one minute). <strong>Hold</strong> to keep going. In menus, moves the highlight.</td></tr>
+                <tr><td>swipe the map</td><td>Same as the D‑pad — a flick walks a step that way.</td></tr>
+                <tr><td><kbd>Use</kbd></td><td>Use the furniture beside you; knock on a shut door; start a shift; do what’s here. Tapping the map does the same.</td></tr>
+                <tr><td><kbd>&#9679;</kbd> OK</td><td>Confirm the highlighted menu choice. (Tapping the choice works too.)</td></tr>
+                <tr><td><kbd>Esc</kbd></td><td>Back out of a menu; skip a mini‑game.</td></tr>
+                <tr><td><kbd>you</kbd></td><td>Character sheet — Subjects, Skills, Life, People, Goals, Log.</td></tr>
+                <tr><td><kbd>phone</kbd></td><td>The phone — calls, browsing, orders, work, college, plans, and more. Works anywhere.</td></tr>
+                <tr><td><kbd>map</kbd></td><td>The wider world and fast‑travel.</td></tr>
+                <tr><td><kbd>build</kbd></td><td>Build Mode (at home only).</td></tr>
+                <tr><td><kbd>auto</kbd> / <kbd>goal</kbd></td><td>Autopilot on/off, or with a standing goal.</td></tr>
+                <tr><td><kbd>rest</kbd></td><td>Go home and do only the recovery you need, then hand back.</td></tr>
+                <tr><td><kbd>pause</kbd></td><td>Save, the story so far, the week in review, the look‑back, back to title.</td></tr>
+                <tr><td><kbd>?</kbd></td><td>Opens this manual, in the app. Tap <kbd>&#10005;</kbd> to close it.</td></tr>
+                <tr><td><kbd>&#9000;</kbd></td><td>Top‑right — brings up the keyboard for the typing mini‑games.</td></tr>
+                <tr><td><kbd>&minus;</kbd> <kbd>+</kbd></td><td>Top‑right, by the keyboard — smaller or bigger text. Remembers your choice.</td></tr>
+                <tr><td>tap a menu row</td><td>Picks that choice. Long lists wrap and scroll.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note">Turn the phone <strong>sideways</strong> for a roomier view — the game plays in portrait or landscape.</div>
+
+          <h3>The fourteen subjects</h3>
+          <div class="t-wrap">
+            <table>
+              <thead><tr><th>Subject</th><th>Subject</th><th>Subject</th></tr></thead>
+              <tbody>
+                <tr><td>Mathematics</td><td>Geography</td><td>Art History</td></tr>
+                <tr><td>Science</td><td>Civics</td><td>Music Theory</td></tr>
+                <tr><td>Biology</td><td>Economics</td><td>Health</td></tr>
+                <tr><td>English</td><td>Computer Science</td><td>Physical Education</td></tr>
+                <tr><td>History</td><td>Foreign Language</td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>The twelve skills</h3>
+          <div class="t-wrap">
+            <table>
+              <thead><tr><th>Skill</th><th>What it does for you</th></tr></thead>
+              <tbody>
+                <tr><td class="mono">Cooking</td><td>Better meals, less waste, more hunger filled per pot.</td></tr>
+                <tr><td class="mono">Fitness</td><td>Stamina and strength — slows how fast energy drains.</td></tr>
+                <tr><td class="mono">Charisma</td><td>Talking to people without it costing you.</td></tr>
+                <tr><td class="mono">Logic</td><td>Faster studying — every subject learns quicker.</td></tr>
+                <tr><td class="mono">Focus</td><td>Longer, deeper work — boosts study and freelance.</td></tr>
+                <tr><td class="mono">Creativity</td><td>Painting, writing, making things up.</td></tr>
+                <tr><td class="mono">Handiness</td><td>Fixing and building — repairs, upgrades, tinkering.</td></tr>
+                <tr><td class="mono">Programming</td><td>Shipping code — the core of freelance income.</td></tr>
+                <tr><td class="mono">Writing</td><td>Prose that lands — feeds freelance and the manuscript.</td></tr>
+                <tr><td class="mono">Music</td><td>Playing an instrument well enough to enjoy it.</td></tr>
+                <tr><td class="mono">Gardening</td><td>Keeping plants alive and thriving.</td></tr>
+                <tr><td class="mono">Wellness</td><td>Rest, hygiene and mood — recovers needs faster.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Saving</h3>
+          <p>The game saves itself as you go — leave whenever, and <em>Continue</em> from the title drops you back exactly where you were. There’s one slot: you’re living one life at a time. The town itself is never saved — it’s grown fresh from the same seed every time, so it’s always the same endless place.</p>
+
+          <h3>Quick answers</h3>
+          <dl class="defs">
+            <div><dt>Passing out?</dt><dd>You’re staying up too late. Sleep in a bed <em>before</em> the evening curve bites — from 8pm it skips to 05:30 on full energy.</dd></div>
+            <div><dt>Broke on rent day?</dt><dd>Tier‑1 freelance at the computer needs nothing and there’s plenty of it. Or take a salaried job for the steady pay.</dd></div>
+            <div><dt>XP crawling?</dt><dd>Check your mood, raise <strong>Logic</strong> and <strong>Focus</strong>, study at the <strong>library</strong>, and buy the <em>core</em> book for the subject.</dd></div>
+            <div><dt>Can’t use a friend’s things?</dt><dd>Get their rapport to <strong>62</strong> — a close friend. Call, text, keep plans, turn up when they’re having a hard time.</dd></div>
+            <div><dt>What’s the point?</dt><dd>Pick an aspiration and chase it. Or don’t — build the life you want to and look back on it in a few years.</dd></div>
+          </dl>
+        </div>
+
+        <div class="colophon">
+          <p>Terminal Life — a small life, one tap at a time.</p>
+          <p>A whole life in coloured ASCII, in the palm of your hand.</p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.toc-static a'));
+    var map = {};
+    links.forEach(function (a) {
+      var id = a.getAttribute('href').slice(1);
+      var el = document.getElementById(id);
+      if (el) map[id] = a;
+    });
+    var ids = Object.keys(map);
+    if (!ids.length || !('IntersectionObserver' in window)) return;
+
+    var current = null;
+    function setActive(id) {
+      if (id === current) return;
+      current = id;
+      links.forEach(function (a) { a.classList.remove('active'); });
+      if (map[id]) map[id].classList.add('active');
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      // pick the entry nearest the top that's on screen
+      var visible = entries.filter(function (e) { return e.isIntersecting; });
+      if (visible.length) {
+        visible.sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+        setActive(visible[0].target.id);
+      }
+    }, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+
+    ids.forEach(function (id) { io.observe(document.getElementById(id)); });
+  })();
+</script>
+
+</body>
+</html>
